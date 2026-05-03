@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Vulcano Invest</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:#F5A623;--gold-dark:#D4891A;--green:#27AE60;--green-bright:#2ECC71;
+    --bg:#0D0F14;--card:#161A23;--card2:#1C2130;--border:#252C3D;
+    --text:#E8ECF0;--muted:#7A8499;--red:#E74C3C;--accent:#3498DB;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:430px;margin:0 auto;overflow-x:hidden;}
+  .screen{display:none;flex-direction:column;min-height:100vh;}
+  .screen.active{display:flex;}
+  .auth-bg{background:linear-gradient(145deg,#0a0c11 0%,#111520 40%,#0d1219 100%);position:relative;overflow:hidden;}
+  .auth-bg::before{content:'';position:absolute;top:-80px;left:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(245,166,35,0.15) 0%,transparent 70%);border-radius:50%;}
+  .auth-bg::after{content:'';position:absolute;bottom:100px;right:-60px;width:250px;height:250px;background:radial-gradient(circle,rgba(39,174,96,0.1) 0%,transparent 70%);border-radius:50%;}
+  .auth-header{padding:60px 30px 30px;text-align:center;position:relative;z-index:1;}
+  .logo-wrap{display:inline-flex;align-items:center;justify-content:center;width:80px;height:80px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:20px;margin-bottom:16px;box-shadow:0 8px 32px rgba(245,166,35,0.35);}
+  .logo-wrap span{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:28px;color:#000;letter-spacing:1px;}
+  .auth-title{font-size:26px;font-weight:800;color:var(--text);margin-bottom:6px;}
+  .auth-sub{font-size:14px;color:var(--muted);}
+  .auth-form{flex:1;background:var(--card);border-radius:28px 28px 0 0;padding:32px 24px 40px;position:relative;z-index:1;}
+  .form-title{font-size:20px;font-weight:700;margin-bottom:24px;color:var(--text);}
+  .input-group{margin-bottom:18px;}
+  .input-label{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px;display:block;letter-spacing:0.5px;text-transform:uppercase;}
+  .input-wrap{position:relative;}
+  .input-wrap input{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:14px;padding:14px 48px 14px 16px;font-size:16px;color:var(--text);font-family:'Nunito',sans-serif;transition:border-color 0.2s;outline:none;}
+  .input-wrap input:focus{border-color:var(--gold);}
+  .input-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--muted);}
+  .btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border:none;border-radius:14px;font-size:16px;font-weight:700;color:#000;cursor:pointer;font-family:'Nunito',sans-serif;letter-spacing:0.5px;transition:opacity 0.2s,transform 0.15s;box-shadow:0 6px 20px rgba(245,166,35,0.3);}
+  .btn-primary:active{opacity:0.85;transform:scale(0.98);}
+  .btn-secondary{width:100%;padding:14px;background:transparent;border:1.5px solid var(--border);border-radius:14px;font-size:15px;font-weight:600;color:var(--text);cursor:pointer;font-family:'Nunito',sans-serif;transition:border-color 0.2s;margin-top:12px;}
+  .btn-secondary:active{opacity:0.7;}
+  .auth-switch{text-align:center;margin-top:20px;font-size:14px;color:var(--muted);}
+  .auth-switch a{color:var(--gold);font-weight:700;cursor:pointer;text-decoration:none;}
+  .forgot-link{text-align:right;font-size:13px;color:var(--gold);cursor:pointer;font-weight:600;margin-top:-8px;margin-bottom:18px;}
+  /* APP HEADER */
+  .app-header{background:var(--card);padding:16px 20px 0;border-bottom:1px solid var(--border);}
+  .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .header-logo{display:flex;align-items:center;gap:10px;}
+  .mini-logo{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#000;}
+  .user-greeting{font-size:13px;color:var(--muted);}
+  .user-name{font-size:15px;font-weight:700;color:var(--text);}
+  .header-actions{display:flex;gap:10px;align-items:center;}
+  .icon-btn{width:36px;height:36px;background:var(--card2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:background 0.2s;}
+  .icon-btn:active{background:var(--border);}
+  .balance-card{background:linear-gradient(135deg,#1a2235,#141c2e);border:1px solid var(--border);border-radius:16px;padding:16px 20px;margin:0 0 16px;display:flex;align-items:center;justify-content:space-between;}
+  .balance-label{font-size:12px;color:var(--muted);margin-bottom:4px;}
+  .balance-amount{font-size:24px;font-weight:800;color:var(--text);font-family:'Rajdhani',sans-serif;}
+  .balance-currency{font-size:14px;color:var(--gold);font-weight:700;}
+  .balance-stats{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+  .stat-pill{background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:20px;padding:3px 10px;font-size:12px;color:var(--green-bright);font-weight:600;}
+  .tab-bar{display:flex;border-bottom:1px solid var(--border);background:var(--card);}
+  .tab-btn{flex:1;padding:13px 8px;border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;position:relative;transition:color 0.2s;}
+  .tab-btn.active{color:var(--text);}
+  .tab-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:3px;background:var(--gold);border-radius:3px 3px 0 0;}
+  .tab-btn.active.fin-tab::after{background:var(--accent);}
+  /* CONTENT */
+  .content-area{flex:1;padding:16px;overflow-y:auto;padding-bottom:90px;}
+  .section-label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+  .qty-badge{background:var(--gold);color:#000;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;}
+  /* PRODUCT CARDS */
+  .product-card{background:var(--card);border:1px solid var(--border);border-radius:18px;margin-bottom:12px;overflow:hidden;transition:transform 0.15s;animation:slideUp 0.4s ease both;}
+  @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .product-card:nth-child(1){animation-delay:0.05s}.product-card:nth-child(2){animation-delay:0.10s}
+  .product-card:nth-child(3){animation-delay:0.15s}.product-card:nth-child(4){animation-delay:0.20s}
+  .product-card:nth-child(5){animation-delay:0.25s}
+  .product-card:active{transform:scale(0.99);}
+  .product-card.free-card{border-color:rgba(39,174,96,0.4);background:linear-gradient(135deg,var(--card),#112018);}
+  .card-top{display:flex;align-items:center;padding:14px 14px 10px;gap:12px;position:relative;}
+  .product-img{width:64px;height:64px;border-radius:12px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+  .free-product-img{background:linear-gradient(135deg,#0a3d20,#1a5e35);border:2px solid rgba(39,174,96,0.4);}
+  .product-info{flex:1;}
+  .product-name{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
+  .price-row{display:flex;align-items:center;gap:8px;}
+  .price-label{font-size:13px;color:var(--muted);font-weight:600;}
+  .price-old{font-size:13px;color:var(--muted);text-decoration:line-through;font-family:'Rajdhani',sans-serif;font-weight:600;}
+  .price-value{font-size:15px;font-weight:700;color:var(--gold);font-family:'Rajdhani',sans-serif;}
+  .badge-free{background:linear-gradient(135deg,var(--green),var(--green-bright));color:#fff;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:0.5px;}
+  .qty-top{position:absolute;top:10px;right:14px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--gold);font-weight:700;}
+  .card-stats{display:grid;grid-template-columns:1fr 1fr;padding:0 14px 4px;gap:4px;}
+  .stat-item{display:flex;flex-direction:column;}
+  .stat-key{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.3px;}
+  .stat-val{font-size:14px;font-weight:700;color:var(--text);font-family:'Rajdhani',sans-serif;}
+  .card-bottom{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 14px;border-top:1px solid var(--border);margin-top:8px;}
+  .total-info{font-size:13px;color:var(--muted);font-weight:600;}
+  .total-val{color:var(--gold);font-weight:700;font-family:'Rajdhani',sans-serif;font-size:14px;}
+  .btn-obter{background:linear-gradient(135deg,var(--green),var(--green-bright));color:#fff;border:none;border-radius:12px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:opacity 0.2s,transform 0.15s;box-shadow:0 4px 15px rgba(39,174,96,0.35);}
+  .btn-comprar{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#000;border:none;border-radius:12px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:opacity 0.2s,transform 0.15s;box-shadow:0 4px 15px rgba(245,166,35,0.3);}
+  .btn-comprar:active,.btn-obter:active{opacity:0.8;transform:scale(0.97);}
+  .btn-processing{background:var(--card2);color:var(--muted);border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-size:12px;font-weight:700;cursor:default;font-family:'Nunito',sans-serif;display:flex;align-items:center;gap:6px;}
+  .spin{display:inline-block;width:12px;height:12px;border:2px solid var(--muted);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  /* BOTTOM NAV */
+  .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);display:flex;padding:8px 0 16px;z-index:100;}
+  .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px;}
+  .nav-icon{font-size:22px;line-height:1;}
+  .nav-label{font-size:11px;color:var(--muted);font-weight:600;}
+  .nav-btn.active .nav-icon{filter:drop-shadow(0 0 4px var(--gold));}
+  .nav-btn.active .nav-label{color:var(--gold);}
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:200;display:none;align-items:flex-end;flex-direction:column;justify-content:flex-end;backdrop-filter:blur(5px);}
+  .modal-overlay.open{display:flex;}
+  .modal-sheet{background:var(--card);border-radius:24px 24px 0 0;padding:24px 24px 40px;width:100%;max-width:430px;margin:0 auto;animation:sheetUp 0.35s cubic-bezier(0.34,1.56,0.64,1) both;}
+  @keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
+  .modal-title{font-size:20px;font-weight:800;margin-bottom:4px;}
+  .modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+  /* INVEST */
+  .invest-method{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;}
+  .method-name{font-size:16px;font-weight:800;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .method-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+  .method-key{font-size:13px;color:var(--muted);font-weight:600;}
+  .method-val{font-size:14px;font-weight:700;color:var(--text);}
+  .btn-whatsapp{width:100%;padding:15px;background:linear-gradient(135deg,#25D366,#128C7E);border:none;border-radius:14px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;font-family:'Nunito',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity 0.2s,transform 0.15s;margin-top:8px;box-shadow:0 4px 16px rgba(37,211,102,0.3);}
+  .btn-whatsapp:active{opacity:0.85;transform:scale(0.98);}
+  /* PROFILE */
+  .profile-header{display:flex;flex-direction:column;align-items:center;margin-bottom:28px;}
+  .avatar{width:80px;height:80px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:12px;box-shadow:0 4px 20px rgba(245,166,35,0.35);}
+  .profile-name{font-size:20px;font-weight:800;}
+  .profile-num{font-size:14px;color:var(--muted);margin-top:2px;}
+  .profile-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px;}
+  .profile-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:14px;}
+  .profile-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
+  .profile-row:last-child{border-bottom:none;}
+  .profile-row-label{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--text);}
+  .profile-row-val{font-size:14px;font-weight:700;color:var(--gold);font-family:'Rajdhani',sans-serif;}
+  .status-badge{font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;}
+  .status-active{background:rgba(39,174,96,0.2);color:var(--green-bright);border:1px solid rgba(39,174,96,0.3);}
+  .status-processing{background:rgba(245,166,35,0.15);color:var(--gold);border:1px solid rgba(245,166,35,0.3);}
+  .status-none{background:var(--card2);color:var(--muted);border:1px solid var(--border);}
+  .btn-logout{width:100%;padding:15px;background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);border-radius:14px;font-size:15px;font-weight:700;color:var(--red);cursor:pointer;font-family:'Nunito',sans-serif;margin-top:12px;}
+  /* TOAST */
+  .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-120px);background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 20px;font-size:14px;font-weight:600;color:var(--text);z-index:999;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.5);}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+  .toast.success{border-color:rgba(39,174,96,0.5);color:var(--green-bright);}
+  .toast.error{border-color:rgba(231,76,60,0.5);color:var(--red);}
+  .toast.info{border-color:rgba(245,166,35,0.5);color:var(--gold);}
+  /* TEAM */
+  .team-card{background:var(--card2);border:1px solid var(--border);border-radius:18px;padding:20px;text-align:center;margin-bottom:16px;}
+  .team-icon{font-size:48px;margin-bottom:12px;}
+  .team-title{font-size:18px;font-weight:800;margin-bottom:6px;}
+  .team-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+  .referral-box{background:var(--card);border:1px dashed var(--gold);border-radius:14px;padding:16px;margin-top:16px;display:flex;align-items:center;justify-content:space-between;}
+  .ref-code{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold);letter-spacing:2px;}
+  .copy-btn{background:var(--gold);color:#000;border:none;border-radius:10px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;}
+  .copy-btn:active{opacity:0.8;}
+  /* BUY MODAL */
+  .product-buy-info{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px;}
+  .buy-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:14px;}
+  .buy-row:last-child{border-bottom:none;}
+  .buy-key{color:var(--muted);font-weight:600;}
+  .buy-val{color:var(--text);font-weight:700;font-family:'Rajdhani',sans-serif;}
+  /* STEP DOTS */
+  .step-dots{display:flex;gap:6px;justify-content:center;margin-bottom:20px;}
+  .step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.2s,transform 0.2s;}
+  .step-dot.active{background:var(--gold);transform:scale(1.3);}
+  .step-dot.done{background:var(--green);}
+  /* STEP HEADER */
+  .step-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .back-btn{width:34px;height:34px;background:var(--card2);border:1px solid var(--border);border-radius:10px;color:var(--text);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  /* PAY METHOD */
+  .pay-method-btn{width:100%;padding:18px 16px;background:var(--card2);border:2px solid var(--border);border-radius:16px;cursor:pointer;font-family:'Nunito',sans-serif;display:flex;align-items:center;gap:14px;text-align:left;transition:border-color 0.2s,background 0.2s;margin-bottom:12px;}
+  .pay-method-btn.sel-mpesa{border-color:var(--gold);background:rgba(245,166,35,0.07);}
+  .pay-method-btn.sel-emola{border-color:var(--accent);background:rgba(52,152,219,0.07);}
+  .pay-method-btn:active{transform:scale(0.99);}
+  .pay-radio{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);margin-left:auto;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .pay-radio.chk-gold{border-color:var(--gold);background:var(--gold);}
+  .pay-radio.chk-blue{border-color:var(--accent);background:var(--accent);}
+  .pay-radio.chk-gold::after,.pay-radio.chk-blue::after{content:'✓';font-size:12px;color:#000;font-weight:900;}
+  /* AMOUNT BOX */
+  .amount-box{background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(245,166,35,0.04));border:1px solid rgba(245,166,35,0.3);border-radius:14px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+  .amount-label{font-size:13px;color:var(--muted);font-weight:600;}
+  .amount-value{font-size:24px;font-weight:800;color:var(--gold);font-family:'Rajdhani',sans-serif;}
+  /* INVITE */
+  .invite-link-box{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-top:12px;}
+  .invite-link-label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+  .invite-link-text{font-size:12px;color:var(--gold);word-break:break-all;font-weight:600;line-height:1.5;}
+  /* TRUMP ANIMATIONS */
+  @keyframes trumpFloat{0%{transform:translateY(0) rotate(-3deg)}25%{transform:translateY(-12px) rotate(3deg)}50%{transform:translateY(-5px) rotate(-2deg)}75%{transform:translateY(-14px) rotate(4deg)}100%{transform:translateY(0) rotate(-3deg)}}
+  @keyframes trumpSpin{0%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(1.2)}100%{transform:rotate(360deg) scale(1)}}
+  .trump-float{animation:trumpFloat 2.5s ease-in-out infinite;display:inline-block;}
+  .trump-spin{animation:trumpSpin 1s ease-in-out forwards;}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- LOGIN -->
+<div class="screen auth-bg active" id="screenLogin">
+  <div class="auth-header">
+    <div class="logo-wrap"><span>VLC</span></div>
+    <div class="auth-title">Vulcano Invest</div>
+    <div class="auth-sub">Invista com segurança e inteligência</div>
+  </div>
+  <div class="auth-form">
+    <div class="form-title">Entrar na conta</div>
+    <div class="input-group">
+      <label class="input-label">Número de telefone</label>
+      <div class="input-wrap">
+        <input type="tel" id="loginPhone" placeholder="8X XXXX XXXX" maxlength="9">
+        <span class="input-icon">📱</span>
+      </div>
+    </div>
+    <div class="input-group">
+      <label class="input-label">PIN</label>
+      <div class="input-wrap">
+        <input type="password" id="loginPin" placeholder="••••••" maxlength="6">
+        <span class="input-icon">🔒</span>
+      </div>
+    </div>
+    <div class="forgot-link" onclick="showScreen('screenForgot')">Esqueci o meu PIN</div>
+    <button class="btn-primary" onclick="doLogin()">Entrar</button>
+    <button class="btn-secondary" onclick="showScreen('screenRegister')">Criar nova conta</button>
+    <div class="auth-switch">Precisa de ajuda? <a onclick="openWhatsApp()">Suporte WhatsApp</a></div>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div class="screen auth-bg" id="screenRegister">
+  <div class="auth-header">
+    <div class="logo-wrap"><span>VLC</span></div>
+    <div class="auth-title">Criar Conta</div>
+    <div class="auth-sub">Cadastre-se e comece a investir hoje</div>
+  </div>
+  <div class="auth-form">
+    <div class="form-title">Novo cadastro</div>
+    <div id="regRefBanner" style="display:none;background:rgba(39,174,96,0.1);border:1px solid rgba(39,174,96,0.3);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--green-bright);margin-bottom:16px;">
+      🎁 Convidado por: <strong id="regRefLabel"></strong>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Nome completo</label>
+      <div class="input-wrap">
+        <input type="text" id="regName" placeholder="Seu nome">
+        <span class="input-icon">👤</span>
+      </div>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Número de telefone</label>
+      <div class="input-wrap">
+        <input type="tel" id="regPhone" placeholder="8X XXXX XXXX" maxlength="9">
+        <span class="input-icon">📱</span>
+      </div>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Criar PIN (4-6 dígitos)</label>
+      <div class="input-wrap">
+        <input type="password" id="regPin" placeholder="••••••" maxlength="6">
+        <span class="input-icon">🔒</span>
+      </div>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Confirmar PIN</label>
+      <div class="input-wrap">
+        <input type="password" id="regPin2" placeholder="••••••" maxlength="6">
+        <span class="input-icon">✅</span>
+      </div>
+    </div>
+    <input type="hidden" id="regRefCode">
+    <button class="btn-primary" onclick="doRegister()">Criar Conta</button>
+    <div class="auth-switch">Já tem conta? <a onclick="showScreen('screenLogin')">Entrar</a></div>
+  </div>
+</div>
+
+<!-- FORGOT PIN -->
+<div class="screen auth-bg" id="screenForgot">
+  <div class="auth-header">
+    <div class="logo-wrap"><span>VLC</span></div>
+    <div class="auth-title">Recuperar PIN</div>
+    <div class="auth-sub">Informe o número cadastrado</div>
+  </div>
+  <div class="auth-form">
+    <div class="form-title">Esqueci o PIN</div>
+    <div class="input-group">
+      <label class="input-label">Número de telefone</label>
+      <div class="input-wrap">
+        <input type="tel" id="forgotPhone" placeholder="8X XXXX XXXX" maxlength="9">
+        <span class="input-icon">📱</span>
+      </div>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Novo PIN</label>
+      <div class="input-wrap">
+        <input type="password" id="newPin" placeholder="••••••" maxlength="6">
+        <span class="input-icon">🔒</span>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="doForgot()">Redefinir PIN</button>
+    <button class="btn-secondary" onclick="showScreen('screenLogin')">← Voltar</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="screen" id="screenApp" style="flex-direction:column;min-height:100vh;">
+  <div class="app-header">
+    <div class="header-top">
+      <div class="header-logo">
+        <div class="mini-logo">VLC</div>
+        <div>
+          <div class="user-greeting">Bem-vindo,</div>
+          <div class="user-name" id="headerUserName">Utilizador</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="icon-btn" onclick="openWhatsApp()">💬</div>
+        <div class="icon-btn" onclick="showNav('profile')">⚙️</div>
+      </div>
+    </div>
+    <div class="balance-card">
+      <div>
+        <div class="balance-label">Saldo Total</div>
+        <div class="balance-amount"><span class="balance-currency">MT </span><span id="balanceDisplay">0.00</span></div>
+      </div>
+      <div class="balance-stats">
+        <div class="stat-pill">+<span id="dailyEarnings">0</span> MT/dia</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Renda diária</div>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('basic',this)">📦 Produtos básicos</button>
+      <button class="tab-btn fin-tab" onclick="switchTab('financiar',this)">💰 Financiar</button>
+    </div>
+  </div>
+
+  <!-- TAB BÁSICO -->
+  <div id="tabBasic" class="content-area">
+    <div class="section-label">Disponível <span class="qty-badge">5</span></div>
+    <!-- FREE -->
+    <div class="product-card free-card">
+      <div class="card-top">
+        <div class="product-img free-product-img">🎁</div>
+        <div class="product-info">
+          <div class="product-name">Produto Grátis</div>
+          <div class="price-row">
+            <span class="price-label">Preço:</span>
+            <span class="price-old">MT 120</span>
+            <span class="badge-free">Grátis</span>
+          </div>
+        </div>
+        <div class="qty-top">Qtd: 98</div>
+      </div>
+      <div class="card-stats">
+        <div class="stat-item"><span class="stat-key">Renda Diária</span><span class="stat-val">MT 25</span></div>
+        <div class="stat-item"><span class="stat-key">Renda Total</span><span class="stat-val">MT 750</span></div>
+        <div class="stat-item" style="margin-top:6px;"><span class="stat-key">Ciclo</span><span class="stat-val">30 Dias</span></div>
+        <div class="stat-item" style="margin-top:6px;"><span class="stat-key">Tempo</span><span class="stat-val" id="freeTimerVal">—</span></div>
+      </div>
+      <div class="card-bottom">
+        <div class="total-info">Renda Total: <span class="total-val">MT 750</span></div>
+        <button class="btn-obter" id="btnFreeProduct" onclick="handleFreeProduct()">Obter</button>
+      </div>
+    </div>
+    <!-- REPSOL ELITE -->
+    <div class="product-card">
+      <div class="card-top">
+        <div class="product-img">🛢️</div>
+        <div class="product-info">
+          <div class="product-name">Repsol Elite</div>
+          <div class="price-row"><span class="price-label">Preço:</span><span class="price-value">MT 300</span></div>
+        </div>
+      </div>
+      <div class="card-stats">
+        <div class="stat-item"><span class="stat-key">Ciclo</span><span class="stat-val">50 Dias</span></div>
+        <div class="stat-item"><span class="stat-key">Renda Diária</span><span class="stat-val">MT 30</span></div>
+      </div>
+      <div class="card-bottom">
+        <div class="total-info">Renda Total: <span class="total-val">MT 1,500</span></div>
+        <button class="btn-comprar" onclick="openBuyModal('Repsol Elite',300,50,30,1500)">Comprar</button>
+      </div>
+    </div>
+    <!-- REPSOL MASTER -->
+    <div class="product-card">
+      <div class="card-top">
+        <div class="product-img">🔧</div>
+        <div class="product-info">
+          <div class="product-name">Repsol Master</div>
+          <div class="price-row"><span class="price-label">Preço:</span><span class="price-value">MT 1,000</span></div>
+        </div>
+      </div>
+      <div class="card-stats">
+        <div class="stat-item"><span class="stat-key">Ciclo</span><span class="stat-val">50 Dias</span></div>
+        <div class="stat-item"><span class="stat-key">Renda Diária</span><span class="stat-val">MT 100</span></div>
+      </div>
+      <div class="card-bottom">
+        <div class="total-info">Renda Total: <span class="total-val">MT 5,000</span></div>
+        <button class="btn-comprar" onclick="openBuyModal('Repsol Master',1000,50,100,5000)">Comprar</button>
+      </div>
+    </div>
+    <!-- REP PREMIUM -->
+    <div class="product-card">
+      <div class="card-top">
+        <div class="product-img">⚙️</div>
+        <div class="product-info">
+          <div class="product-name">REP Premium</div>
+          <div class="price-row"><span class="price-label">Preço:</span><span class="price-value">MT 3,000</span></div>
+        </div>
+      </div>
+      <div class="card-stats">
+        <div class="stat-item"><span class="stat-key">Ciclo</span><span class="stat-val">60 Dias</span></div>
+        <div class="stat-item"><span class="stat-key">Renda Diária</span><span class="stat-val">MT 300</span></div>
+      </div>
+      <div class="card-bottom">
+        <div class="total-info">Renda Total: <span class="total-val">MT 18,000</span></div>
+        <button class="btn-comprar" onclick="openBuyModal('REP Premium',3000,60,300,18000)">Comprar</button>
+      </div>
+    </div>
+    <!-- REP ELITE PRO -->
+    <div class="product-card">
+      <div class="card-top">
+        <div class="product-img">💎</div>
+        <div class="product-info">
+          <div class="product-name">REP Elite Pro</div>
+          <div class="price-row"><span class="price-label">Preço:</span><span class="price-value">MT 10,000</span></div>
+        </div>
+      </div>
+      <div class="card-stats">
+        <div class="stat-item"><span class="stat-key">Ciclo</span><span class="stat-val">90 Dias</span></div>
+        <div class="stat-item"><span class="stat-key">Renda Diária</span><span class="stat-val">MT 750</span></div>
+      </div>
+      <div class="card-bottom">
+        <div class="total-info">Renda Total: <span class="total-val">MT 67,500</span></div>
+        <button class="btn-comprar" onclick="openBuyModal('REP Elite Pro',10000,90,750,67500)">Comprar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB FINANCIAR -->
+  <div id="tabFinanciar" class="content-area" style="display:none;">
+    <div class="section-label">Onde vai transferir?</div>
+    <div style="display:flex;gap:12px;margin-bottom:20px;">
+      <button id="btnChooseMpesa" onclick="chooseMethod('mpesa')" style="flex:1;padding:18px 10px;background:var(--card);border:2px solid var(--border);border-radius:16px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.2s;">
+        <div style="font-size:28px;margin-bottom:6px;">📱</div>
+        <div style="font-size:15px;font-weight:800;color:var(--text);">M-Pesa</div>
+      </button>
+      <button id="btnChooseEmola" onclick="chooseMethod('emola')" style="flex:1;padding:18px 10px;background:var(--card);border:2px solid var(--border);border-radius:16px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.2s;">
+        <div style="font-size:28px;margin-bottom:6px;">💳</div>
+        <div style="font-size:15px;font-weight:800;color:var(--text);">E-Mola</div>
+      </button>
+    </div>
+    <div id="infoMpesa" style="display:none;">
+      <div class="invest-method" style="border-color:rgba(245,166,35,0.4);">
+        <div class="method-name">📱 M-Pesa</div>
+        <div class="method-row"><span class="method-key">Número</span><span class="method-val">842 250 940</span></div>
+        <div class="method-row"><span class="method-key">Nome</span><span class="method-val">Samuel Francisco</span></div>
+      </div>
+      <div style="padding:12px;background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.2);border-radius:12px;font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px;">
+        ⚠️ Após efectuar o depósito, envie o comprovativo via WhatsApp para activar o investimento.
+      </div>
+      <button class="btn-whatsapp" onclick="openWhatsAppProof('M-Pesa')">📩 Enviar comprovativo via WhatsApp</button>
+      <button class="btn-whatsapp" style="margin-top:10px;background:linear-gradient(135deg,#25D366,#075E54);" onclick="openWhatsApp()">💬 Falar com suporte</button>
+    </div>
+    <div id="infoEmola" style="display:none;">
+      <div class="invest-method" style="border-color:rgba(52,152,219,0.4);">
+        <div class="method-name" style="color:var(--accent);">💳 E-Mola</div>
+        <div class="method-row"><span class="method-key">Número</span><span class="method-val">869 837 094</span></div>
+        <div class="method-row"><span class="method-key">Nome</span><span class="method-val">Samuel Paulo Francisco</span></div>
+      </div>
+      <div style="padding:12px;background:rgba(52,152,219,0.07);border:1px solid rgba(52,152,219,0.2);border-radius:12px;font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px;">
+        ⚠️ Após efectuar o depósito, envie o comprovativo via WhatsApp para activar o investimento.
+      </div>
+      <button class="btn-whatsapp" onclick="openWhatsAppProof('E-Mola')">📩 Enviar comprovativo via WhatsApp</button>
+      <button class="btn-whatsapp" style="margin-top:10px;background:linear-gradient(135deg,#25D366,#075E54);" onclick="openWhatsApp()">💬 Falar com suporte</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-btn active" id="navHome" onclick="showNav('home')"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></div>
+    <div class="nav-btn" id="navInvest" onclick="showNav('invest')"><span class="nav-icon">💰</span><span class="nav-label">Investir</span></div>
+    <div class="nav-btn" id="navTeam" onclick="showNav('team')"><span class="nav-icon">👥</span><span class="nav-label">Equipe</span></div>
+    <div class="nav-btn" id="navProfile" onclick="showNav('profile')"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></div>
+  </div>
+</div>
+
+<!-- BUY MODAL (3 STEPS) -->
+<div class="modal-overlay" id="modalBuy">
+  <div class="modal-sheet" style="max-height:93vh;overflow-y:auto;">
+    <div class="modal-handle"></div>
+    <div class="step-dots">
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div id="buyStep1">
+      <div style="text-align:center;margin-bottom:16px;">
+        <div id="trumpModal" class="trump-float" style="font-size:60px;cursor:pointer;filter:drop-shadow(0 6px 20px rgba(245,166,35,0.5));" onclick="tapTrump('trumpModal')">🤴</div>
+        <div style="font-size:11px;color:var(--gold);font-weight:800;letter-spacing:1px;margin-top:6px;">MAKE YOUR INVESTMENT GREAT AGAIN!</div>
+      </div>
+      <div class="modal-title" id="modalProductName">Produto</div>
+      <div class="modal-sub">Confirme os detalhes antes de investir</div>
+      <div class="product-buy-info">
+        <div class="buy-row"><span class="buy-key">Produto</span><span class="buy-val" id="modalProdName2">—</span></div>
+        <div class="buy-row"><span class="buy-key">Preço</span><span class="buy-val" id="modalPrice">—</span></div>
+        <div class="buy-row"><span class="buy-key">Ciclo</span><span class="buy-val" id="modalCycle">—</span></div>
+        <div class="buy-row"><span class="buy-key">Renda Diária</span><span class="buy-val" id="modalDaily">—</span></div>
+        <div class="buy-row"><span class="buy-key">Renda Total</span><span class="buy-val" id="modalTotal">—</span></div>
+      </div>
+      <button class="btn-primary" onclick="goStep(2)">💳 Investir Agora</button>
+      <button class="btn-secondary" onclick="closeBuyModal()">Cancelar</button>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="buyStep2" style="display:none;">
+      <div class="step-header">
+        <button class="back-btn" onclick="goStep(1)">←</button>
+        <div>
+          <div class="modal-title" style="margin:0;">Como vai pagar?</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">Selecione o método de pagamento</div>
+        </div>
+      </div>
+      <div class="amount-box">
+        <span class="amount-label">Valor a pagar</span>
+        <span class="amount-value" id="payAmountDisplay">MT —</span>
+      </div>
+      <button class="pay-method-btn" id="payBtnMpesa" onclick="selectPayMethod('mpesa')">
+        <span style="font-size:34px;">📱</span>
+        <div>
+          <div style="font-size:16px;font-weight:800;color:var(--text);">M-Pesa</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">Vodacom · E.Pesa · 842 250 940</div>
+        </div>
+        <div class="pay-radio" id="radioMpesa"></div>
+      </button>
+      <button class="pay-method-btn" id="payBtnEmola" onclick="selectPayMethod('emola')">
+        <span style="font-size:34px;">💳</span>
+        <div>
+          <div style="font-size:16px;font-weight:800;color:var(--text);">E-Mola</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">Movitel · 869 837 094</div>
+        </div>
+        <div class="pay-radio" id="radioEmola"></div>
+      </button>
+      <button class="btn-primary" id="btnGoStep3" onclick="goStep(3)" style="opacity:0.4;pointer-events:none;">Ver dados de transferência →</button>
+      <button class="btn-secondary" onclick="closeBuyModal()">Cancelar</button>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="buyStep3" style="display:none;">
+      <div class="step-header">
+        <button class="back-btn" onclick="goStep(2)">←</button>
+        <div>
+          <div class="modal-title" style="margin:0;" id="step3Title">Dados de Pagamento</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">Transfira e envie o comprovativo</div>
+        </div>
+      </div>
+      <div class="amount-box">
+        <span class="amount-label">Valor a transferir</span>
+        <span class="amount-value" id="step3Amount">MT —</span>
+      </div>
+      <div class="invest-method" id="step3Card" style="margin-bottom:14px;">
+        <div class="method-name" id="step3MethodName">—</div>
+        <div class="method-row"><span class="method-key">Número</span><span class="method-val" id="step3Number">—</span></div>
+        <div class="method-row"><span class="method-key">Nome</span><span class="method-val" id="step3Name">—</span></div>
+      </div>
+      <div style="padding:12px;background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.2);border-radius:12px;font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;">
+        ⚠️ Após transferir, clique em <strong style="color:var(--text);">Enviar Comprovativo</strong> para activar o seu investimento.
+      </div>
+      <button class="btn-whatsapp" onclick="sendProofWhatsApp()">📩 Enviar Comprovativo via WhatsApp</button>
+      <button class="btn-secondary" onclick="closeBuyModal()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE PANEL -->
+<div class="modal-overlay" id="panelProfile">
+  <div class="modal-sheet" style="max-height:90vh;overflow-y:auto;">
+    <div class="modal-handle"></div>
+    <div class="profile-header">
+      <div class="avatar">👤</div>
+      <div class="profile-name" id="profileName">Utilizador</div>
+      <div class="profile-num" id="profileNum">+258 8X XXXX XXXX</div>
+    </div>
+    <div class="profile-card">
+      <div class="profile-section-title">💼 Meus Investimentos</div>
+      <div class="profile-row">
+        <span class="profile-row-label">🆓 Produto Grátis</span>
+        <span class="status-badge" id="freeStatusBadge">Não ativado</span>
+      </div>
+      <div class="profile-row" id="freeTimerRow" style="display:none;">
+        <span class="profile-row-label">⏱️ Tempo restante</span>
+        <span class="profile-row-val" id="profileTimerVal">—</span>
+      </div>
+      <div class="profile-row">
+        <span class="profile-row-label">💰 Saldo acumulado</span>
+        <span class="profile-row-val">MT <span id="profileBalance">0.00</span></span>
+      </div>
+      <div class="profile-row">
+        <span class="profile-row-label">📈 Renda diária</span>
+        <span class="profile-row-val">MT <span id="profileDaily">0</span></span>
+      </div>
+    </div>
+    <div class="profile-card">
+      <div class="profile-section-title">🛠️ Suporte</div>
+      <button class="btn-whatsapp" onclick="openWhatsApp()">💬 Falar com suporte</button>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">🚪 Terminar sessão</button>
+  </div>
+</div>
+
+<!-- TEAM PANEL -->
+<div class="modal-overlay" id="panelTeam">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto;">
+    <div class="modal-handle"></div>
+
+    <!-- Trump mascot -->
+    <div style="text-align:center;margin-bottom:20px;">
+      <div id="trumpTeam" class="trump-float" style="font-size:72px;cursor:pointer;filter:drop-shadow(0 8px 24px rgba(245,166,35,0.55));" onclick="tapTrump('trumpTeam')">🤴</div>
+      <div style="font-size:12px;color:var(--gold);font-weight:800;letter-spacing:1px;margin-top:8px;">VULCANO INVEST — MAKE IT GREAT!</div>
+    </div>
+
+    <div class="modal-title">👥 Minha Equipe</div>
+    <div class="modal-sub">Convide amigos e ganhe bônus</div>
+
+    <div class="team-card">
+      <div class="team-icon">🤝</div>
+      <div class="team-title">Programa de Referência</div>
+      <div class="team-desc">Partilhe o seu link e ganhe bônus quando os seus amigos criarem conta e investirem na Vulcano.</div>
+      <div class="referral-box">
+        <div>
+          <div style="font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">Seu código</div>
+          <div class="ref-code" id="refCode">VLC0000</div>
+        </div>
+        <button class="copy-btn" onclick="copyRefCode()">Copiar</button>
+      </div>
+      <div class="invite-link-box">
+        <div class="invite-link-label">Link de convite</div>
+        <div class="invite-link-text" id="inviteLinkDisplay">—</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-bottom:16px;">
+      <button class="btn-primary" style="flex:1;margin:0;" onclick="shareInviteLink()">📤 Partilhar</button>
+      <button class="copy-btn" style="flex:1;padding:14px;border-radius:14px;font-size:14px;" onclick="copyInviteLink()">📋 Copiar link</button>
+    </div>
+
+    <!-- Stats -->
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px;">📊 Estatísticas</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:var(--card);border-radius:12px;padding:14px;text-align:center;">
+          <div style="font-size:28px;font-weight:800;color:var(--gold);font-family:'Rajdhani',sans-serif;" id="teamInvited">0</div>
+          <div style="font-size:11px;color:var(--muted);font-weight:600;margin-top:4px;">Convidados</div>
+        </div>
+        <div style="background:var(--card);border-radius:12px;padding:14px;text-align:center;">
+          <div style="font-size:28px;font-weight:800;color:var(--green-bright);font-family:'Rajdhani',sans-serif;" id="teamBonus">0</div>
+          <div style="font-size:11px;color:var(--muted);font-weight:600;margin-top:4px;">Bônus MT</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="invitedByBlock" style="display:none;background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.25);border-radius:14px;padding:12px 16px;margin-bottom:14px;">
+      <div style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:4px;">🎁 Convidado por</div>
+      <div style="font-size:15px;font-weight:800;color:var(--green-bright);" id="invitedByText">—</div>
+    </div>
+
+    <button class="btn-secondary" onclick="closePanel('panelTeam')">Fechar</button>
+  </div>
+</div>
+
+<script>
+// ===== DB =====
+const DB = {
+  get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set: (k,v) => localStorage.setItem(k, JSON.stringify(v)),
+  getAccounts: () => DB.get('vlcAccounts') || {},
+  saveAccounts: a => DB.set('vlcAccounts', a),
+  getCurrentUser: () => DB.get('vlcCurrentUser'),
+  setCurrentUser: u => DB.set('vlcCurrentUser', u),
+  clearCurrentUser: () => localStorage.removeItem('vlcCurrentUser'),
+  getFreeStatus: () => DB.get('vlcFreeStatus') || {},
+  saveFreeStatus: s => DB.set('vlcFreeStatus', s),
+  getReferrals: () => DB.get('vlcReferrals') || {},
+  saveReferrals: r => DB.set('vlcReferrals', r),
+};
+
+let currentUser = null, timerInterval = null;
+let selPayMethod = null, curProduct = null;
+
+// ===== URL REF =====
+function getRefFromUrl() {
+  try {
+    const p = new URLSearchParams(window.location.search);
+    return p.get('ref') || (window.location.hash.startsWith('#ref=') ? window.location.hash.slice(5) : null);
+  } catch { return null; }
+}
+function makeInviteLink(code) {
+  return window.location.href.split('?')[0].split('#')[0] + '?ref=' + code;
+}
+
+// ===== SCREEN =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ===== TOAST =====
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.className = 'toast ' + type; t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ===== AUTH =====
+function doRegister() {
+  const name  = document.getElementById('regName').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const pin   = document.getElementById('regPin').value.trim();
+  const pin2  = document.getElementById('regPin2').value.trim();
+  const ref   = document.getElementById('regRefCode').value.trim();
+  if (!name||!phone||!pin||!pin2) return showToast('Preencha todos os campos','error');
+  if (phone.length<8) return showToast('Número inválido','error');
+  if (pin.length<4)   return showToast('PIN deve ter pelo menos 4 dígitos','error');
+  if (pin!==pin2)     return showToast('Os PINs não coincidem','error');
+  const acc = DB.getAccounts();
+  if (acc[phone]) return showToast('Este número já está registado','error');
+  acc[phone] = { name, phone, pin, balance:0, dailyIncome:0, invitedBy:ref||null };
+  DB.saveAccounts(acc);
+  if (ref) {
+    const refs = DB.getReferrals();
+    if (!refs[ref]) refs[ref] = [];
+    refs[ref].push({ phone, name, date:Date.now() });
+    DB.saveReferrals(refs);
+  }
+  showToast('Conta criada com sucesso! 🎉','success');
+  setTimeout(() => showScreen('screenLogin'), 1300);
+}
+
+function doLogin() {
+  const phone = document.getElementById('loginPhone').value.trim();
+  const pin   = document.getElementById('loginPin').value.trim();
+  if (!phone||!pin) return showToast('Preencha todos os campos','error');
+  const acc = DB.getAccounts();
+  if (!acc[phone])          return showToast('Número não encontrado','error');
+  if (acc[phone].pin!==pin) return showToast('PIN incorreto','error');
+  DB.setCurrentUser(phone);
+  currentUser = acc[phone];
+  enterApp();
+}
+
+function doForgot() {
+  const phone  = document.getElementById('forgotPhone').value.trim();
+  const newPin = document.getElementById('newPin').value.trim();
+  if (!phone||!newPin)  return showToast('Preencha todos os campos','error');
+  if (newPin.length<4)  return showToast('PIN deve ter pelo menos 4 dígitos','error');
+  const acc = DB.getAccounts();
+  if (!acc[phone]) return showToast('Número não encontrado','error');
+  acc[phone].pin = newPin; DB.saveAccounts(acc);
+  showToast('PIN redefinido com sucesso!','success');
+  setTimeout(() => showScreen('screenLogin'), 1300);
+}
+
+function doLogout() {
+  DB.clearCurrentUser(); currentUser = null;
+  if (timerInterval) clearInterval(timerInterval);
+  closePanel('panelProfile'); showScreen('screenLogin');
+}
+
+// ===== ENTER APP =====
+function enterApp() {
+  const acc = DB.getAccounts();
+  currentUser = acc[currentUser?.phone || DB.getCurrentUser()];
+  const code = 'VLC' + currentUser.phone.slice(-4);
+  document.getElementById('headerUserName').textContent  = currentUser.name.split(' ')[0];
+  document.getElementById('profileName').textContent     = currentUser.name;
+  document.getElementById('profileNum').textContent      = '+258 ' + currentUser.phone;
+  document.getElementById('refCode').textContent         = code;
+  document.getElementById('inviteLinkDisplay').textContent = makeInviteLink(code);
+  // Team stats
+  const refs = DB.getReferrals();
+  const myRefs = refs[code] || [];
+  document.getElementById('teamInvited').textContent = myRefs.length;
+  document.getElementById('teamBonus').textContent   = myRefs.length * 50;
+  // Invited by
+  if (currentUser.invitedBy) {
+    document.getElementById('invitedByBlock').style.display = 'block';
+    document.getElementById('invitedByText').textContent    = currentUser.invitedBy;
+  }
+  updateBalanceDisplay();
+  checkFreeProductStatus();
+  showScreen('screenApp');
+  showNav('home');
+}
+
+// ===== BALANCE =====
+function updateBalanceDisplay() {
+  const bal   = currentUser.balance || 0;
+  const daily = currentUser.dailyIncome || 0;
+  document.getElementById('balanceDisplay').textContent = bal.toFixed(2);
+  document.getElementById('dailyEarnings').textContent  = daily;
+  document.getElementById('profileBalance').textContent = bal.toFixed(2);
+  document.getElementById('profileDaily').textContent   = daily;
+}
+function saveUser() {
+  const acc = DB.getAccounts(); acc[currentUser.phone] = currentUser; DB.saveAccounts(acc);
+}
+
+// ===== FREE PRODUCT =====
+function handleFreeProduct() {
+  const fs = DB.getFreeStatus(), ph = currentUser.phone;
+  if (fs[ph]) { showToast(fs[ph].done ? 'Produto grátis concluído! ✅' : 'Já está em processamento! ⏳','info'); return; }
+  fs[ph] = { startTime:Date.now(), durationMs:30*24*60*60*1000, done:false };
+  DB.saveFreeStatus(fs);
+  currentUser.dailyIncome = (currentUser.dailyIncome||0) + 25;
+  saveUser(); updateBalanceDisplay(); updateFreeButton(); startFreeTimer();
+  showToast('Produto grátis activado! Em processamento... ⚙️','success');
+}
+
+function checkFreeProductStatus() {
+  const fs = DB.getFreeStatus(), ph = currentUser.phone;
+  if (!fs[ph]) return;
+  if (fs[ph].done) { markFreeDone(); return; }
+  if (Date.now()-fs[ph].startTime >= fs[ph].durationMs) { completeFree(); return; }
+  updateFreeButton(); startFreeTimer();
+}
+
+function updateFreeButton() {
+  const btn = document.getElementById('btnFreeProduct');
+  if (btn) btn.outerHTML = '<button class="btn-processing" id="btnFreeProduct"><span class="spin"></span>Processando</button>';
+  const badge = document.getElementById('freeStatusBadge');
+  if (badge) { badge.className='status-badge status-processing'; badge.textContent='Em processamento'; }
+  const row = document.getElementById('freeTimerRow');
+  if (row) row.style.display='flex';
+}
+
+function markFreeDone() {
+  const btn = document.getElementById('btnFreeProduct');
+  if (btn) btn.outerHTML = '<span class="btn-processing" style="color:var(--green-bright);" id="btnFreeProduct">✅ Concluído</span>';
+  const badge = document.getElementById('freeStatusBadge');
+  if (badge) { badge.className='status-badge status-active'; badge.textContent='Concluído'; }
+}
+
+function completeFree() {
+  const fs = DB.getFreeStatus();
+  fs[currentUser.phone].done = true; DB.saveFreeStatus(fs);
+  currentUser.balance = (currentUser.balance||0) + 750;
+  saveUser(); updateBalanceDisplay(); markFreeDone();
+  showToast('Produto grátis concluído! MT 750 adicionados! 🎉','success');
+}
+
+function startFreeTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  function tick() {
+    const fs = DB.getFreeStatus(), ph = currentUser?.phone;
+    if (!fs[ph]||fs[ph].done) { clearInterval(timerInterval); return; }
+    const rem = fs[ph].durationMs-(Date.now()-fs[ph].startTime);
+    if (rem<=0) { clearInterval(timerInterval); completeFree(); return; }
+    const d=Math.floor(rem/86400000), h=Math.floor((rem%86400000)/3600000),
+          m=Math.floor((rem%3600000)/60000), s=Math.floor((rem%60000)/1000);
+    const str = d>0 ? `${d}d ${h}h ${m}m` : `${h}h ${m}m ${s}s`;
+    const e1=document.getElementById('freeTimerVal'), e2=document.getElementById('profileTimerVal');
+    if (e1) e1.textContent=str; if (e2) e2.textContent=str;
+  }
+  tick(); timerInterval = setInterval(tick,1000);
+}
+
+// ===== TABS =====
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tabBasic').style.display     = tab==='basic'     ? 'block' : 'none';
+  document.getElementById('tabFinanciar').style.display = tab==='financiar' ? 'block' : 'none';
+}
+
+// ===== NAV =====
+function showNav(section) {
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panelProfile').classList.remove('open');
+  document.getElementById('panelTeam').classList.remove('open');
+
+  if (section==='home') {
+    document.getElementById('navHome').classList.add('active');
+    document.getElementById('tabBasic').style.display='block';
+    document.getElementById('tabFinanciar').style.display='none';
+    document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+  } else if (section==='invest') {
+    document.getElementById('navInvest').classList.add('active');
+    document.getElementById('tabBasic').style.display='none';
+    document.getElementById('tabFinanciar').style.display='block';
+    document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    chooseMethod(null);
+  } else if (section==='team') {
+    document.getElementById('navTeam').classList.add('active');
+    document.getElementById('panelTeam').classList.add('open');
+  } else if (section==='profile') {
+    document.getElementById('navProfile').classList.add('active');
+    updateBalanceDisplay();
+    document.getElementById('panelProfile').classList.add('open');
+  }
+}
+
+function closePanel(id) {
+  document.getElementById(id).classList.remove('open');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('navHome').classList.add('active');
+}
+
+// ===== BUY MODAL =====
+function openBuyModal(name, price, cycle, daily, total) {
+  curProduct = { name, price, cycle, daily, total };
+  selPayMethod = null;
+  document.getElementById('modalProductName').textContent = name;
+  document.getElementById('modalProdName2').textContent   = name;
+  document.getElementById('modalPrice').textContent  = 'MT ' + price.toLocaleString();
+  document.getElementById('modalCycle').textContent  = cycle + ' Dias';
+  document.getElementById('modalDaily').textContent  = 'MT ' + daily.toLocaleString();
+  document.getElementById('modalTotal').textContent  = 'MT ' + total.toLocaleString();
+  document.getElementById('payAmountDisplay').textContent = 'MT ' + price.toLocaleString();
+  document.getElementById('step3Amount').textContent      = 'MT ' + price.toLocaleString();
+  resetPayRadios();
+  document.getElementById('btnGoStep3').style.cssText='opacity:0.4;pointer-events:none;';
+  goStep(1);
+  document.getElementById('modalBuy').classList.add('open');
+}
+
+function closeBuyModal() {
+  document.getElementById('modalBuy').classList.remove('open');
+  selPayMethod = null;
+}
+
+function goStep(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('buyStep'+i).style.display = i===n ? 'block' : 'none';
+    const d = document.getElementById('dot'+i);
+    d.className = 'step-dot' + (i<n?' done':i===n?' active':'');
+  });
+}
+
+function resetPayRadios() {
+  document.getElementById('payBtnMpesa').className='pay-method-btn';
+  document.getElementById('payBtnEmola').className='pay-method-btn';
+  document.getElementById('radioMpesa').className='pay-radio';
+  document.getElementById('radioEmola').className='pay-radio';
+}
+
+function selectPayMethod(method) {
+  selPayMethod = method;
+  resetPayRadios();
+  if (method==='mpesa') {
+    document.getElementById('payBtnMpesa').className='pay-method-btn sel-mpesa';
+    document.getElementById('radioMpesa').className='pay-radio chk-gold';
+    document.getElementById('step3Title').textContent      = 'Dados M-Pesa';
+    document.getElementById('step3MethodName').textContent = '📱 M-Pesa';
+    document.getElementById('step3Number').textContent     = '842 250 940';
+    document.getElementById('step3Name').textContent       = 'Samuel Francisco';
+    document.getElementById('step3Card').style.borderColor = 'rgba(245,166,35,0.45)';
+  } else {
+    document.getElementById('payBtnEmola').className='pay-method-btn sel-emola';
+    document.getElementById('radioEmola').className='pay-radio chk-blue';
+    document.getElementById('step3Title').textContent      = 'Dados E-Mola';
+    document.getElementById('step3MethodName').textContent = '💳 E-Mola';
+    document.getElementById('step3Number').textContent     = '869 837 094';
+    document.getElementById('step3Name').textContent       = 'Samuel Paulo Francisco';
+    document.getElementById('step3Card').style.borderColor = 'rgba(52,152,219,0.45)';
+  }
+  document.getElementById('btnGoStep3').style.cssText='opacity:1;pointer-events:auto;';
+}
+
+function sendProofWhatsApp() {
+  const p = curProduct;
+  const m = selPayMethod==='mpesa' ? 'M-Pesa' : 'E-Mola';
+  const msg = encodeURIComponent(
+    `Olá! Efectuei o pagamento via *${m}* para o produto *${p?.name}* — valor *MT ${p?.price?.toLocaleString()}*.\n\nSegue em anexo o comprovativo. Por favor, activar o investimento. Obrigado! 🙏`
+  );
+  window.open('https://wa.me/258842250940?text='+msg,'_blank');
+}
+
+// ===== FINANCIAR TAB =====
+function chooseMethod(method) {
+  const mp=document.getElementById('btnChooseMpesa'), em=document.getElementById('btnChooseEmola');
+  const mi=document.getElementById('infoMpesa'),      ei=document.getElementById('infoEmola');
+  if (mp){mp.style.borderColor='var(--border)';mp.style.background='var(--card)';}
+  if (em){em.style.borderColor='var(--border)';em.style.background='var(--card)';}
+  if (mi) mi.style.display='none';
+  if (ei) ei.style.display='none';
+  if (method==='mpesa'){mp.style.borderColor='var(--gold)';mp.style.background='rgba(245,166,35,0.08)';mi.style.display='block';}
+  else if(method==='emola'){em.style.borderColor='var(--accent)';em.style.background='rgba(52,152,219,0.08)';ei.style.display='block';}
+}
+
+// ===== WHATSAPP =====
+function openWhatsApp() {
+  window.open('https://wa.me/258842250940?text='+encodeURIComponent('Olá! Preciso de ajuda com a plataforma Vulcano Invest.'),'_blank');
+}
+function openWhatsAppProof(method) {
+  window.open('https://wa.me/258842250940?text='+encodeURIComponent(`Olá! Envio o meu comprovativo de depósito via *${method}* para activar o investimento na Vulcano. Obrigado!`),'_blank');
+}
+
+// ===== INVITE =====
+function shareInviteLink() {
+  const code=document.getElementById('refCode').textContent;
+  const link=makeInviteLink(code);
+  const text=`🔥 Junte-se à *Vulcano Invest* e comece a investir hoje!\n\n👉 ${link}\n\nCódigo: *${code}*`;
+  if (navigator.share) navigator.share({title:'Vulcano Invest',url:link}).catch(()=>window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank'));
+  else window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
+}
+function copyInviteLink() {
+  const link=makeInviteLink(document.getElementById('refCode').textContent);
+  navigator.clipboard.writeText(link).then(()=>showToast('Link copiado! 📋','success')).catch(()=>showToast('Erro ao copiar','error'));
+}
+function copyRefCode() {
+  navigator.clipboard.writeText(document.getElementById('refCode').textContent).then(()=>showToast('Código copiado! ✅','success'));
+}
+
+// ===== TRUMP =====
+function tapTrump(id) {
+  const el=document.getElementById(id); if(!el) return;
+  el.classList.remove('trump-float');
+  el.classList.add('trump-spin');
+  setTimeout(()=>{ el.classList.remove('trump-spin'); el.classList.add('trump-float'); },1050);
+}
+
+// ===== CLOSE OVERLAYS =====
+['modalBuy','panelProfile','panelTeam'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',function(e){
+    if(e.target===this){ if(id==='modalBuy') closeBuyModal(); else closePanel(id); }
+  });
+});
+
+// ===== BOOT =====
+window.addEventListener('load',()=>{
+  const ref = getRefFromUrl();
+  if (ref) {
+    document.getElementById('regRefCode').value=ref;
+    document.getElementById('regRefBanner').style.display='block';
+    document.getElementById('regRefLabel').textContent=ref;
+  }
+  const saved=DB.getCurrentUser();
+  if (saved) {
+    const acc=DB.getAccounts();
+    if (acc[saved]){ currentUser=acc[saved]; enterApp(); return; }
+  }
+  showScreen(ref ? 'screenRegister' : 'screenLogin');
+});
+</script>
+</body>
+</html>
